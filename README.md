@@ -19,9 +19,9 @@
 
 ### 2. sysbench
 可以对io, cpu, 内存等等进行测试.. 很全面且灵活，比较常用，适合对服务器进行测试。
-- 常用参数
+1. 常用参数
     - `--test` 用于指定所要执行的测试类型，支持以下参数
-        - `Fileio` 文件系统IO性能测试
+        - `fileio` 文件系统IO性能测试
         - `cpu` CPU性能测试
         - `memory` 内存性能测试
         - `Oltp` 测试要指定具体的lua脚本
@@ -38,3 +38,19 @@
     - `prepare` 用于准备测试数据 
     - `run` 用于实际进行测试
     - `cleanup` 用于清理测试数据
+
+2. 测试举例:
+   - 基础组件的测试:
+     - 测试cpu性能: 计算小于10000的素数:  <br>``sysbench --test=cpu --cpu-max-prime=10000 run``
+     - 测试io性能:
+        - 随机读写: `sysbench --test=fileio --num-threads=8 --init-rng=on --file-total-size=1G --file-test-mode=rndrw  run `
+        - 生成一个G的文件：`sysbench --test=fileio --file-total-size=1G prepare`
+    - 数据库性能测试:
+        1. 新建一个数据库 `create database imooc;`
+        2. 设置权限 `grant all privileges on *.* to sbest@'localhost' identified by '123456';`
+        3. 准备测试数据(表和表中的数据)   
+            - 插入10个表，每个表10000行记录，使用innodb引擎，使用的脚本是`sysbench/tests/db/`下面的脚本
+            - `sysbench --test=./oltp.lua --mysql-table-engine=innodb --oltp-table-size=10000 --mysql-db=imooc --mysql-user=sbest --mysql-password=123456 --oltp-tables-count=10 prepare`
+        4. 保存一下当前的系统状态(运行前的系统状态), 运行脚本
+        5. 开始测试 `sysbench --test=./oltp.lua --mysql-table-engine=innodb --oltp-table-size=10000 --mysql-db=imooc --mysql-user=sbest --mysql-password=123456 --oltp-tables-count=10 run` <br>最后一个改成了`run`
+        6. 数据结果分析.
