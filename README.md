@@ -54,3 +54,5 @@
         4. 保存一下当前的系统状态(运行前的系统状态), 运行脚本
         5. 开始测试 `sysbench --test=./oltp.lua --mysql-table-engine=innodb --oltp-table-size=10000 --mysql-db=imooc --mysql-user=sbest --mysql-password=123456 --oltp-tables-count=10 run` <br>最后一个改成了`run`
         6. 数据结果分析.
+   
+ps： 使用的sysbench版本为0.5；需要注意的是0.4的版本有一些指令不能用.. 比如`--test=oltp.lua` 就会无法识别.. 
